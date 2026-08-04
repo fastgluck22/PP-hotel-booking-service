@@ -14,3 +14,14 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["room", "start_date"], name="booking_index"),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(end_date__gt=models.F('start_date')),
+                name="booking_end_date_after_start_date",
+            )
+        ]
