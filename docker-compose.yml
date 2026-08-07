@@ -3,17 +3,15 @@ services:
     image: postgres:17-alpine
     container_name: hotel_db
     restart: unless-stopped
-    network_mode: "host"
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=kudaxterpass1
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_NAME} -d ${DB_NAME}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -22,21 +20,12 @@ services:
     build: .
     container_name: hotel_web
     restart: unless-stopped
-    network_mode: "host"
-    command: sh -c "sleep 3 && python src/manage.py migrate && python src/manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/app
+    command:
+      sh -c "python src/manage.py migrate && python src/manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     depends_on:
       db:
-          condition: service_healthy
-    environment:
-      - DB_HOST=127.0.0.1
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASSWORD=kudaxterpass1
-      - DB_PORT=5432
-
-volumes:
-  postgres_data:
+        condition: service_healthy

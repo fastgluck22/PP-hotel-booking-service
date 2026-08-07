@@ -1,7 +1,7 @@
 [project]
 name = "maindir"
 version = "0.1.0"
-description = ""
+description = "hotel booking API"
 authors = [
     {name = "Alsou",email = "fastgluck22@gmail.com"}
 ]
@@ -9,25 +9,25 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django (>=6.0.6,<7.0.0)",
-    "mypy (>=2.1.0,<3.0.0)",
     "typing-extensions (>=4.16.0,<5.0.0)",
-    "bandit (>=1.9.4,<2.0.0)",
-    "radon (>=6.0.1,<7.0.0)",
-    "ipython (==9.15.0)",
     "django-extensions (==4.1)",
     "psycopg2-binary (>=2.9.12,<3.0.0)",
-    "automium-web (>=0.1.1,<0.2.0)"
+    "automium-web (>=0.1.1,<0.2.0)",
+    "djangorestframework (>=3.17.2,<4.0.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "maindir", from = "src"}]
 package-mode = false
+
+[dependency-groups]
+dev = [
+    "mypy (>=2.1.0,<3.0.0)",
+    "bandit (>=1.9.4,<2.0.0)",
+    "radon (>=6.0.1,<7.0.0)",
+    "ipython (==9.15.0)",
+    "python-dotenv (>=1.0.0,<2.0.0)",
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[dependency-groups]
-dev = [
-    "radon (>=6.0.1,<7.0.0)"
-]

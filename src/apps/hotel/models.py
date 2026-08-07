@@ -1,3 +1,6 @@
+from django.contrib.postgres.constraints import ExclusionConstraint
+from django.contrib.postgres.fields import RangeOperators
+from django.db.models import Func
 from django.db import models
 
 
@@ -23,5 +26,12 @@ class Booking(models.Model):
             models.CheckConstraint(
                 condition=models.Q(end_date__gt=models.F('start_date')),
                 name="booking_end_date_after_start_date",
-            )
+            ),
+            ExclusionConstraint(
+                name="prevent_booking_overlaps",
+                expressions=[
+                    ("room", "="),
+                    (Func("start_date", "end_date", function="daterange"), RangeOperators.OVERLAPS),
+                ],
+            ),
         ]
