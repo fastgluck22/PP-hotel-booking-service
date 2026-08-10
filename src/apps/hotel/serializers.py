@@ -16,12 +16,14 @@ class RoomSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ["room", "start_date", "end_date"]
+        fields = ["id", "room", "start_date", "end_date"]
 
-    def validate_date(self, attrs):
+    def validate(self, attrs):
+        room = attrs.get("room")
         start_date = attrs.get("start_date")
         end_date = attrs.get("end_date")
 
-        if end_date <= start_date:
-            raise serializers.ValidationError({"end_date":"Дата окончания бронирования должна быть позже даты начала"})
-        return end_date
+        if Booking.objects.filter(room=room, start_date__lt=end_date, end_date__gt=start_date).exists():
+            raise serializers.ValidationError("Даты пересекаются.")
+
+        return attrs

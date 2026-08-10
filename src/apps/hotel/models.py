@@ -19,6 +19,7 @@ class Booking(models.Model):
     end_date = models.DateField()
 
     class Meta:
+        ordering = ["-id"]
         indexes = [
             models.Index(fields=["room", "start_date"], name="booking_index"),
         ]
